@@ -1,44 +1,16 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include "Database.h"
-#include "queueSys.h"
-#include "reservationMatrix.h"
-
+#include "Users.h"
 using namespace std;
 
 int main() {
-    ifstream inFile;
-    inFile.open("data.txt");
+	ifstream inFile;
+	inFile.open("userdata");
+	Users userList(inFile);
 
-    Database Data(inFile);
-    Queueing Queue(Data);
+	cout << "LOGIN v.01" << endl;
 
-    Queue.getVacants(1);
+	userList.addUser();
 
-    Queue.printVacantList();
-
-    /*
-    bool reservationMatrix[9][7];
-
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 7; j++) {
-            inFile >> reservationMatrix[i][j];
-        }
-    }
-
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 7; j++) {
-            inFile >> reservationMatrix[i][j];
-        }
-    }
-
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 7; j++) {
-            cout << reservationMatrix[i][j] << " ";
-        }
-        cout << endl;
-    }
-*/
-    return 0;
+	userList.printData();
 }
