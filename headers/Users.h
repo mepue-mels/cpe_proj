@@ -129,6 +129,10 @@ public:
 		return isFound;
 	}
 
+	string returnName(string u) {
+		return returnUser(u)->getName();
+	}
+
 	vector<User>::iterator returnUser(string u) {
 		vector<User>::iterator posItr;
 
