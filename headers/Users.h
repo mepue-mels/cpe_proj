@@ -180,6 +180,10 @@ string login(Users& UserList) {
 	cout << "Enter username: ";	
 	cin >> username;
 
+	while (!UserList.searchUsername(username)) {
+		cout << "Username not found! Try again: "; cin >> username;
+	}
+
 	if ( UserList.searchUsername(username) ) { //username found
 		cout << "Enter password: ";
 		cin >> password;

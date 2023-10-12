@@ -49,13 +49,13 @@ void Reservation::changeStatus(int row, int col, bool val) {
         if (currentUser == reserverFile[row][col]) 
     }
     reservationMatrix[row][col] = val;
-    reserverMatrix[row][col] = currentUser;
+e    reserverMatrix[row][col] = currentUser;
 }
 */
 
 void Reservation::reserve(int row, int col) {
     if (reservationMatrix[row][col] == true) {
-        cout << "Cannot reserve in a reserved slot!";
+        cout << "Cannot reserve in a reserved slot!" << endl << endl;
     } else {
         reservationMatrix[row][col] = true;
         reserverMatrix[row][col] = currentUser;

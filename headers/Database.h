@@ -18,6 +18,7 @@ public:
     Reservation returnMatrix(int roomIndex);
     string getReserverName(int roomIndex, int row, int col);
     void printMatrix(int roomIndex);
+    void outputMatrix(ofstream& outFile);
 };
 
 
@@ -54,6 +55,19 @@ void Database::printMatrix(int roomIndex) {
     }
 }
 
+void Database::outputMatrix(ofstream& outFile) {
+    vector<Reservation>::iterator roomItr;
+    vector<User>::iterator userItr;
+
+    for (roomItr = roomArray.begin(); roomItr != roomArray.end(); ++roomItr) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 7; j++) {
+                outFile << roomItr -> getStatus(i,j) << " ";
+            }
+            outFile << endl;
+        }
+    }
+}
 
 
 
