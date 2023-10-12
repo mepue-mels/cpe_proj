@@ -16,9 +16,10 @@ int main() {
 	string choice;
 	string currentUser;
 	Users userList(userFile);
-	Database Data(boolFile, reserverFile, userList, currentUser);
 
 	currentUser = login(userList);
+
+	Database Data(boolFile, reserverFile, userList, currentUser);
 
 	setup(choice, currentUser, userList);
 
@@ -26,9 +27,9 @@ int main() {
 		loop(choice, Data, userList, currentUser);
 	}
 
-	outBool.open("TestboolFile");
-	outReserver.open("TestreserverFile");
-	outUser.open("TestUserFile");
+	outBool.open("sampledata/boolFile");
+	outReserver.open("sampledata/reserverFile");
+	outUser.open("sampledata/userFile");
 
 	Data.outputMatrix(outBool, outReserver);
 	userList.outputUserdata(outUser);
@@ -125,9 +126,13 @@ void createReservations(Database& dat) {
 		counter++;
 	}
 
-	cout << endl << "Which time window do you want to reserve: "; cin >> choice;
+	cout << endl << "Which time window do you want to reserve: "; cin >> choice; cin.ignore(1, '\n');
 
 	dat.returnMatrix(room).reserve(choice, dayIndex);
+}
+
+void deleteReservations(Database& dat) {
+
 }
 
 void loop(string& choice, Database& dat, Users& userList, string currentUser) {
@@ -154,6 +159,7 @@ void loop(string& choice, Database& dat, Users& userList, string currentUser) {
 			userList.deleteUser(username);
 			dat.removeUserReservations(username);
 		}
+		cout << endl;
 	}
 
 	cout << "(1) View a reservation" << endl
