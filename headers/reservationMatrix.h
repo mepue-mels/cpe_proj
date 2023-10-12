@@ -15,10 +15,12 @@ public:
     Reservation(ifstream& boolFile, ifstream& reserverFile);
     bool getStatus(int row, int col) const;
     string getReserver(int row, int col) const;
+    void setReserver(string name, int row, int col);
     void setCurrentUser(string u);
     void changeStatus(int row, int col, bool val);
     void reserve(int row, int col);
     void remove(int row, int col);
+    void removeUserReservations(string username);
     void getData(ifstream& boolFile, ifstream& reserverFile);
 };
 
@@ -41,6 +43,10 @@ bool Reservation::getStatus(int row, int col) const {
 
 string Reservation::getReserver(int row, int col) const {
     return reserverMatrix[row][col];
+}
+
+void Reservation::setReserver(string name, int row, int col) {
+    reserverMatrix[row][col] = name;
 }
 
 /*
@@ -71,6 +77,16 @@ void Reservation::remove(int row, int col) {
         }
     } else {
         cout << "You can only delete your own reservations!";
+    }
+}
+
+void Reservation::removeUserReservations(string username) {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 7; j++) {
+            if (reserverMatrix[i][j] == username) {
+                reservationMatrix[i][j] = false;
+            }
+        }
     }
 }
 

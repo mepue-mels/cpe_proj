@@ -4,7 +4,7 @@
 using namespace std;
 
 void setup(string& choice, string currentUser, Users userList);
-void loop(string& choice, Database& dat, string currentUser);
+void loop(string& choice, Database& dat, Users& userList, string currentUser);
 
 int main() {
 	ifstream userFile, boolFile, reserverFile;
@@ -23,12 +23,12 @@ int main() {
 	setup(choice, currentUser, userList);
 
 	while (choice != "-999") {
-		loop(choice, Data, currentUser);
+		loop(choice, Data, userList, currentUser);
 	}
 
-	outBool.open("sampledata/boolFile");
-	outReserver.open("sampledata/reserverFile");
-	outUser.open("testUserFile");
+	outBool.open("TestboolFile");
+	outReserver.open("TestreserverFile");
+	outUser.open("TestUserFile");
 
 	Data.outputMatrix(outBool, outReserver);
 	userList.outputUserdata(outUser);
@@ -45,7 +45,7 @@ void setup(string& choice, string currentUser, Users userList) {
 		 << "(3) Delete a reservation" << endl
 		 << "(4) Find a reservation" << endl
 		 << "(5) Add user (admin only)" << endl
-		 << "(6) Delete user (admin onl)" << endl << endl
+		 << "(6) Delete user (admin only)" << endl << endl
 		 << "Enter choice: ";
 	getline(cin, choice);
 }
@@ -70,9 +70,9 @@ void showReservations(Database dat) {
 		 << "N204 - 4" << endl
 		 << "N205 - 5" << endl;
 
-	cout << "Enter your desired room: "; cin >> room;
+	cout << "Enter your desired room: "; cin >> room; cin.ignore(1, '\n');
 
-	cout << "Enter your desired day of reservation: "; cin >> day;
+	cout << "Enter your desired day of reservation: "; cin >> day; cin.ignore(1, '\n');
 
 	cout << "Remaining time slots:" << endl;
 
@@ -107,10 +107,13 @@ void createReservations(Database& dat) {
 		"7:30PM-9:00PM"
 	};
 
+
 	cout << "What room do you wish to reserve in: ";
 	cin >> room;
+	cin.ignore(1, '\n');
 	cout << "Which day do you want to reserve in: ";
 	cin >> dayIndex;
+	cin.ignore(1, '\n');
 
 	cout << endl << endl
 		 << "These are the free windows:" << endl;
@@ -127,7 +130,7 @@ void createReservations(Database& dat) {
 	dat.returnMatrix(room).reserve(choice, dayIndex);
 }
 
-void loop(string& choice, Database& dat, string currentUser) {
+void loop(string& choice, Database& dat, Users& userList, string currentUser) {
 	if (choice == "1") {
 		showReservations(dat);
 	} else if (choice == "2") {
@@ -136,7 +139,20 @@ void loop(string& choice, Database& dat, string currentUser) {
 		if (currentUser != "root") {
 			cout << "You are not the administrator!" << endl;
 		} else {
-			dat.addUser();
+			userList.addUser();
+		}
+	} else if (choice == "6") {
+		if (currentUser != "root") {
+			cout << "You are not the administrator!" << endl;
+		} else {
+			string username;
+			cout << "Enter username: "; getline(cin, username);
+
+			while (!userList.searchUsername(username)) {
+				cout << "User not found! Try again: "; getline(cin, username);
+			}
+			userList.deleteUser(username);
+			dat.removeUserReservations(username);
 		}
 	}
 

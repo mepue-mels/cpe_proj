@@ -20,6 +20,7 @@ public:
     void reserveMatrixEntry(int roomIndex, int row, int col);
     void printMatrix(int roomIndex);
     void outputMatrix(ofstream& boolFile, ofstream& reserverFile);
+    void removeUserReservations(string username);
     void addUser();
 };
 
@@ -55,6 +56,19 @@ void Database::printMatrix(int roomIndex) {
             cout << roomArray[roomIndex].getStatus(i,j) << " ";
         }
         cout << endl;
+    }
+}
+
+void Database::removeUserReservations(string username) {
+    for (int k = 0; k < 5; k++) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (returnMatrix(k).getReserver(i,j) == username) {
+                    returnMatrix(k).remove(i,j);
+                    returnMatrix(k).setReserver("NULL", i, j);
+                }
+            }
+        }
     }
 }
 

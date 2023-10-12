@@ -116,6 +116,10 @@ public:
 		cout << "User added!" << endl;
 	}
 
+	void deleteUser(string username) {
+		userList.erase(returnUser(username));
+	}
+
 	bool searchUsername(string u) {
 		vector<User>::iterator posItr;
 		bool isFound = false;
@@ -189,7 +193,7 @@ string login(Users& UserList) {
 	string username, password;
 	int counter = 0;
 	cout << "Enter username: ";	
-	cin >> username;
+	getline(cin, username);
 
 	while (!UserList.searchUsername(username)) {
 		cout << "Username not found! Try again: "; cin >> username;
@@ -197,12 +201,12 @@ string login(Users& UserList) {
 
 	if ( UserList.searchUsername(username) ) { //username found
 		cout << "Enter password: ";
-		cin >> password;
-		
+		getline(cin, password);
+
 		while (password != UserList.returnUser(username)->getPassword() && counter != 3) {
 			counter++;
 			cout << "Wrong password! " << counter << " out of 3 tries." << endl <<  "Please re-enter: ";
-			cin >> password;
+			getline(cin, password);
 		}
 
 		if (counter == 3) {
