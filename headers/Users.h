@@ -97,10 +97,10 @@ public:
 
 		while (passtemp != pass) {
 			cout << "Passwords do not match! Enter a new password: ";
-			cin >> pass;
+			getline(cin, pass);
 
 			cout << "Verify password: ";
-			cin >> passtemp;
+			getline(cin, passtemp);
 		}
 
 		cout << "Enter name: ";
@@ -167,6 +167,17 @@ public:
 		for (iter = userList.begin(); iter != userList.end(); ++iter) {
 			cout << iter->getUsername() << " " << iter->getName() << " " << iter->getFacultyID() << " " << iter->getDepartment();
 			cout << endl;
+		}
+	}
+	void outputUserdata(ofstream& outUser) {
+		vector<User>::iterator iter;
+
+		for (iter = userList.begin(); iter != userList.end(); ++iter) {
+			outUser << iter->getUsername() << endl
+				    << iter->getPassword() << endl
+				    << iter->getName() << endl
+				    << iter->getFacultyID() << endl
+				    << iter->getDepartment() << endl;
 		}
 	}
 

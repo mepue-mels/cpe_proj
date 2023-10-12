@@ -3,57 +3,51 @@
 #include "headers/Database.h"
 using namespace std;
 
-void setup(int& choice, string currentUser, Users userList);
-void loop(int& choice, Database dat);
+void setup(string& choice, string currentUser, Users userList);
+void loop(string& choice, Database& dat, string currentUser);
 
 int main() {
 	ifstream userFile, boolFile, reserverFile;
-	ofstream outFile("testOut.dat");
+	ofstream outUser, outBool, outReserver;
 	userFile.open("sampledata/userFile");
 	boolFile.open("sampledata/boolFile");
 	reserverFile.open("sampledata/reserverFile");
 
-	int choice;
+	string choice;
 	string currentUser;
 	Users userList(userFile);
-	Database Data(boolFile, reserverFile, userList);
+	Database Data(boolFile, reserverFile, userList, currentUser);
 
+	currentUser = login(userList);
 
-	userList.addUser();
+	setup(choice, currentUser, userList);
 
-//	currentUser = login(userList);
-
-
-
-	/*
-	if (currentUser == "NULL") {
-		cout << "Program exiting, cannot find user!";
-	} else {
-		setup(choice, currentUser, userList);
+	while (choice != "-999") {
+		loop(choice, Data, currentUser);
 	}
 
-	while (choice != -999) {
-		loop(choice, Data);
-	}
+	outBool.open("sampledata/boolFile");
+	outReserver.open("sampledata/reserverFile");
+	outUser.open("testUserFile");
 
-	Data.outputMatrix(outFile);
-
-	*/
-
+	Data.outputMatrix(outBool, outReserver);
+	userList.outputUserdata(outUser);
 
 
 }
 
-void setup(int& choice, string currentUser, Users userList) {
+void setup(string& choice, string currentUser, Users userList) {
 	cout << endl;
 	cout << "CLRS beta v1.0" << endl
 		 << "Welcome " << userList.returnName(currentUser) << endl << endl;
 	cout << "(1) View a reservation" << endl
 		 << "(2) Create a reservation" << endl
 		 << "(3) Delete a reservation" << endl
-		 << "(4) Find a reservation" << endl << endl
+		 << "(4) Find a reservation" << endl
+		 << "(5) Add user (admin only)" << endl
+		 << "(6) Delete user (admin onl)" << endl << endl
 		 << "Enter choice: ";
-	cin >> choice;
+	getline(cin, choice);
 }
 
 
@@ -100,7 +94,7 @@ void showReservations(Database dat) {
 
 }
 
-void createReservations(Database dat) {
+void createReservations(Database& dat) {
 	int dayIndex;
 	int room;
 	int counter = 0;
@@ -123,7 +117,7 @@ void createReservations(Database dat) {
 
 	for (int i = 0; i < 9; i++) {
 		if (!dat.returnMatrix(room).getStatus(i,dayIndex)) {
-			cout << timeArray[i] << "( " << counter << ")" << endl;
+			cout << timeArray[i] << "(" << counter << ")" << endl;
 		}
 		counter++;
 	}
@@ -133,20 +127,25 @@ void createReservations(Database dat) {
 	dat.returnMatrix(room).reserve(choice, dayIndex);
 }
 
-void loop(int& choice, Database dat) {
-	switch (choice) {
-		case 1:
-			showReservations(dat);
-			break;
-		case 2:
-			createReservations(dat);
-			break;
+void loop(string& choice, Database& dat, string currentUser) {
+	if (choice == "1") {
+		showReservations(dat);
+	} else if (choice == "2") {
+		createReservations(dat);
+	} else if (choice == "5") {
+		if (currentUser != "root") {
+			cout << "You are not the administrator!" << endl;
+		} else {
+			dat.addUser();
+		}
 	}
 
 	cout << "(1) View a reservation" << endl
 		 << "(2) Create a reservation" << endl
 		 << "(3) Delete a reservation" << endl
-		 << "(4) Find a reservation" << endl << endl
+		 << "(4) Find a reservation" << endl
+		 << "(5) Add user (admin only)" << endl
+		 << "(6) Delete user (admin only)" << endl << endl
 		 << "Enter choice: ";
-	cin >> choice;
+	getline(cin, choice);
 }

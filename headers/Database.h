@@ -14,11 +14,13 @@ private:
     Users userList;
 public:
     Database();
-    Database(ifstream& boolFile, ifstream& reserverFile, Users u);
-    Reservation returnMatrix(int roomIndex);
+    Database(ifstream& boolFile, ifstream& reserverFile, Users u, string currentUser);
+    Reservation &returnMatrix(int roomIndex);
     string getReserverName(int roomIndex, int row, int col);
+    void reserveMatrixEntry(int roomIndex, int row, int col);
     void printMatrix(int roomIndex);
-    void outputMatrix(ofstream& outFile);
+    void outputMatrix(ofstream& boolFile, ofstream& reserverFile);
+    void addUser();
 };
 
 
@@ -26,13 +28,14 @@ Database::Database() {
 
 }
 
-Database::Database(ifstream& boolFile, ifstream& reserverFile, Users u) {
+Database::Database(ifstream& boolFile, ifstream& reserverFile, Users u, string currentUser) {
     Reservation buffer;
     roomArray.assign(5, buffer); // initialize five reservation matrices
     vector<Reservation>::iterator vecIter;
 
     for (vecIter = roomArray.begin(); vecIter != roomArray.end(); ++vecIter) { // fetches reservation data for each room
         vecIter->getData(boolFile, reserverFile);
+        vecIter->setCurrentUser(currentUser);
     }
 
     userList = u;
@@ -42,7 +45,7 @@ string Database::getReserverName(int roomIndex, int row, int col) {
     return userList.returnName(returnMatrix(roomIndex).getReserver(row,col));
 }
 
-Reservation Database::returnMatrix(int roomIndex) {
+Reservation& Database::returnMatrix(int roomIndex) {
     return roomArray[roomIndex];
 }
 
@@ -55,20 +58,29 @@ void Database::printMatrix(int roomIndex) {
     }
 }
 
-void Database::outputMatrix(ofstream& outFile) {
+void Database::outputMatrix(ofstream& boolFile, ofstream& reserverFile) {
     vector<Reservation>::iterator roomItr;
     vector<User>::iterator userItr;
 
     for (roomItr = roomArray.begin(); roomItr != roomArray.end(); ++roomItr) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 7; j++) {
-                outFile << roomItr -> getStatus(i,j) << " ";
+                boolFile << roomItr -> getStatus(i,j) << " ";
+                reserverFile << roomItr -> getReserver(i,j) << " ";
             }
-            outFile << endl;
+            boolFile << endl;
+            reserverFile << endl;
         }
     }
 }
 
+void Database::addUser() {
+    userList.addUser();
+}
+
+void Database::reserveMatrixEntry(int roomIndex, int row, int col) {
+    returnMatrix(roomIndex).reserve(row, col);
+}
 
 
 #endif // DATABASE_H_

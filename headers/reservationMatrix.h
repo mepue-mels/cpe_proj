@@ -57,7 +57,7 @@ void Reservation::reserve(int row, int col) {
     if (reservationMatrix[row][col] == true) {
         cout << "Cannot reserve in a reserved slot!" << endl << endl;
     } else {
-        reservationMatrix[row][col] = true;
+        reservationMatrix[row][col] = 1;
         reserverMatrix[row][col] = currentUser;
     }
 
