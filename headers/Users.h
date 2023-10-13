@@ -2,8 +2,12 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
+#include "reservationTracker.h"
+
 using namespace std;
 
+
+/*********USER CLASS************/
 class User {
 private:
 	string username;
@@ -11,26 +15,29 @@ private:
 	string name;
 	string faculty_id;
 	string department;
+	ReservationTracker userReservationList;
 public:
 	User() {
 		username = "";
 		pass = "";
 	}
 
-	User(string u, string p, string n, string i, string d) {
+	User(string u, string p, string n, string i, string d, int rC) {
 		username = u;
 		pass = p;
 		name = n;
 		faculty_id = i;
 		department = d;
+		userReservationList.setReservationCount(rC);
 	}
 
-	void set(string u, string p, string n, string i, string d) {
+	void set(string u, string p, string n, string i, string d, int rC) {
 		username = u;
 		pass = p;
 		name = n;
 		faculty_id = i;
 		department = d;
+		userReservationList.setReservationCount(rC);
 	}
 	
 	string getUsername() const {
@@ -52,7 +59,34 @@ public:
 	string getDepartment() const {
 		return department;
 	}
+
+	int getUserTime(int listIndex) {
+		return userReservationList.getUserReservationTime(listIndex);
+	}
+
+	int getUserDay(int listIndex) {
+		return userReservationList.getUserReservationDay(listIndex);
+	}
+
+	int getUserReservationCount() const {
+		return userReservationList.getReservationCount();
+	}
+
+	void fetchReservationDataToUser(int time, int day) {
+		userReservationList.initialAddReservation(time, day);
+	}
+
+	void addReservationToUser(int time, int day) {
+		userReservationList.addReservation(time, day);
+	}
+
+	void clearReservationData() {
+		userReservationList.clearUserReservationList();
+	}
 };
+
+
+/***********USERS CONTAINER CLASS**********/
 
 class Users {
 private:
@@ -65,6 +99,7 @@ public:
 	Users(ifstream& inFile) {
 		User buf;
 		string user, pass, name, faculty_id, department;
+		int reservationCount;
 
 		while (inFile) {
 //			inFile >> user >> pass >> name >> faculty_id >> department;
@@ -73,8 +108,17 @@ public:
 			getline(inFile, name);
 			getline(inFile, faculty_id);
 			getline(inFile, department);
-			buf.set(user,pass, name, faculty_id, department);
+			inFile >> reservationCount;
+			inFile.ignore(1, '\n');
+			buf.set(user,pass, name, faculty_id, department, reservationCount);
+			for (int i = 0; i < reservationCount; i++) { // if all things go wrong, it will be the insertion
+				int day, time;
+				inFile >> time; inFile.ignore(1, '\n');
+				inFile >> day; inFile.ignore(1, '\n');
+				buf.fetchReservationDataToUser(time, day);
+			}
 			userList.push_back(buf);
+
 		}
 
 		userList.pop_back(); //gets rid of that one extra annoying bug of istream
@@ -110,7 +154,7 @@ public:
 		cout << "Enter your department: ";
 		getline(cin, department);
 
-		User newUser(username, pass, name, faculty_id, department);
+		User newUser(username, pass, name, faculty_id, department, 0);
 		userList.push_back(newUser);
 
 		cout << "User added!" << endl;
@@ -181,7 +225,12 @@ public:
 				    << iter->getPassword() << endl
 				    << iter->getName() << endl
 				    << iter->getFacultyID() << endl
-				    << iter->getDepartment() << endl;
+				    << iter->getDepartment() << endl
+			        << iter->getUserReservationCount() << endl;
+			for (int i = 0; i < iter->getUserReservationCount(); i++) {
+				outUser << iter->getUserTime(i) << " ";
+				outUser << iter->getUserDay(i) << endl;
+			}
 		}
 	}
 
@@ -216,6 +265,6 @@ string login(Users& UserList) {
 		}
 		
 	} else {
-		return "Username not found or password incorrect";
+		return "Username not found, or password incorrect";
 	}
 }

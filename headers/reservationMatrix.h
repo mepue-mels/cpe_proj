@@ -5,14 +5,14 @@
 #include <fstream>
 using namespace std;
 
-class Reservation {
+class ReservationContainer {
 private:
     bool reservationMatrix[9][7];
     string reserverMatrix[9][7];
     string currentUser;
 public:
-    Reservation();
-    Reservation(ifstream& boolFile, ifstream& reserverFile);
+    ReservationContainer();
+    ReservationContainer(ifstream& boolFile, ifstream& reserverFile);
     bool getStatus(int row, int col) const;
     string getReserver(int row, int col) const;
     void setReserver(string name, int row, int col);
@@ -24,11 +24,11 @@ public:
     void getData(ifstream& boolFile, ifstream& reserverFile);
 };
 
-Reservation::Reservation() {
+ReservationContainer::ReservationContainer() {
 
 }
 
-Reservation::Reservation(ifstream& boolFile, ifstream& reserverFile) {
+ReservationContainer::ReservationContainer(ifstream& boolFile, ifstream& reserverFile) {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 7; j++) {
             boolFile >> reservationMatrix[i][j];
@@ -37,15 +37,15 @@ Reservation::Reservation(ifstream& boolFile, ifstream& reserverFile) {
     }
 }
 
-bool Reservation::getStatus(int row, int col) const {
+bool ReservationContainer::getStatus(int row, int col) const {
     return reservationMatrix[row][col];
 }
 
-string Reservation::getReserver(int row, int col) const {
+string ReservationContainer::getReserver(int row, int col) const {
     return reserverMatrix[row][col];
 }
 
-void Reservation::setReserver(string name, int row, int col) {
+void ReservationContainer::setReserver(string name, int row, int col) {
     reserverMatrix[row][col] = name;
 }
 
@@ -59,7 +59,7 @@ e    reserverMatrix[row][col] = currentUser;
 }
 */
 
-void Reservation::reserve(int row, int col) {
+void ReservationContainer::reserve(int row, int col) {
     if (reservationMatrix[row][col] == true) {
         cout << "Cannot reserve in a reserved slot!" << endl << endl;
     } else {
@@ -69,7 +69,7 @@ void Reservation::reserve(int row, int col) {
 
 }
 
-void Reservation::remove(int row, int col) {
+void ReservationContainer::remove(int row, int col) {
     if (reservationMatrix[row][col] == true) {
         if (currentUser == reserverMatrix[row][col]) {
             reservationMatrix[row][col] = false;
@@ -80,7 +80,7 @@ void Reservation::remove(int row, int col) {
     }
 }
 
-void Reservation::removeUserReservations(string username) {
+void ReservationContainer::removeUserReservations(string username) {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 7; j++) {
             if (reserverMatrix[i][j] == username) {
@@ -90,7 +90,7 @@ void Reservation::removeUserReservations(string username) {
     }
 }
 
-void Reservation::getData(ifstream& boolFile, ifstream& reserverFile) {
+void ReservationContainer::getData(ifstream& boolFile, ifstream& reserverFile) {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 7; j++) {
             boolFile >> reservationMatrix[i][j];
@@ -99,7 +99,7 @@ void Reservation::getData(ifstream& boolFile, ifstream& reserverFile) {
     }
 }
 
-void Reservation::setCurrentUser(string u) {
+void ReservationContainer::setCurrentUser(string u) {
     currentUser = u;
 }
 

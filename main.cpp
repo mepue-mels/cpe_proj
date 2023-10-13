@@ -39,7 +39,7 @@ int main() {
 
 void setup(string& choice, string currentUser, Users userList) {
 	cout << endl;
-	cout << "CLRS beta v1.0" << endl
+	cout << "CLRS beta" << endl
 		 << "Welcome " << userList.returnName(currentUser) << endl << endl;
 	cout << "(1) View a reservation" << endl
 		 << "(2) Create a reservation" << endl

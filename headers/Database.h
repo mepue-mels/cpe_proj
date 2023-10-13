@@ -10,12 +10,12 @@ using namespace std;
 
 class Database {
 private:
-    vector<Reservation> roomArray;
+    vector<ReservationContainer> roomArray;
     Users userList;
 public:
     Database();
     Database(ifstream& boolFile, ifstream& reserverFile, Users u, string currentUser);
-    Reservation &returnMatrix(int roomIndex);
+    ReservationContainer &returnMatrix(int roomIndex);
     string getReserverName(int roomIndex, int row, int col);
     void reserveMatrixEntry(int roomIndex, int row, int col);
     void printMatrix(int roomIndex);
@@ -30,9 +30,9 @@ Database::Database() {
 }
 
 Database::Database(ifstream& boolFile, ifstream& reserverFile, Users u, string currentUser) {
-    Reservation buffer;
+    ReservationContainer buffer;
     roomArray.assign(5, buffer); // initialize five reservation matrices
-    vector<Reservation>::iterator vecIter;
+    vector<ReservationContainer>::iterator vecIter;
 
     for (vecIter = roomArray.begin(); vecIter != roomArray.end(); ++vecIter) { // fetches reservation data for each room
         vecIter->getData(boolFile, reserverFile);
@@ -46,7 +46,7 @@ string Database::getReserverName(int roomIndex, int row, int col) {
     return userList.returnName(returnMatrix(roomIndex).getReserver(row,col));
 }
 
-Reservation& Database::returnMatrix(int roomIndex) {
+ReservationContainer& Database::returnMatrix(int roomIndex) {
     return roomArray[roomIndex];
 }
 
@@ -73,7 +73,7 @@ void Database::removeUserReservations(string username) {
 }
 
 void Database::outputMatrix(ofstream& boolFile, ofstream& reserverFile) {
-    vector<Reservation>::iterator roomItr;
+    vector<ReservationContainer>::iterator roomItr;
     vector<User>::iterator userItr;
 
     for (roomItr = roomArray.begin(); roomItr != roomArray.end(); ++roomItr) {
